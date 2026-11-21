@@ -18,7 +18,16 @@
       <label class="campo"><span>E-mail</span><input id="login-email" class="input" type="email" required autocomplete="username"></label>
       <label class="campo"><span>Senha</span><input id="login-senha" class="input" type="password" required autocomplete="current-password"></label>
       <button class="btn primario grande" type="submit">Entrar</button>
+      <button id="btn-esqueci" class="btn ghost" type="button">Esqueci a senha</button>
       <p id="login-msg" class="aviso erro"></p>
+    </form>
+
+    <form id="form-nova-senha" class="cartao-login hidden">
+      <h1>Nova senha</h1>
+      <p class="muted">Defina a sua nova senha de acesso.</p>
+      <label class="campo"><span>Nova senha (mín. 6 caracteres)</span><input id="nova-senha" class="input" type="password" required minlength="6" autocomplete="new-password"></label>
+      <label class="campo"><span>Confirmar nova senha</span><input id="nova-senha2" class="input" type="password" required minlength="6" autocomplete="new-password"></label>
+      <button class="btn primario grande" type="submit">Salvar nova senha</button>
     </form>
   </section>
 

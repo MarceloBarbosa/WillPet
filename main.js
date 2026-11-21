@@ -20,12 +20,26 @@ function mostrar(secao) {
   $app.classList.toggle('hidden', secao !== 'app');
 }
 
+const $formLogin = document.getElementById('form-login');
+const $formNova = document.getElementById('form-nova-senha');
+// true enquanto o usuário define a nova senha (link recebido por e-mail)
+let recuperando = location.hash.includes('type=recovery');
+
 function mostrarLogin(msg = '') {
   mostrar('login');
+  $formLogin.classList.remove('hidden');
+  $formNova.classList.add('hidden');
   document.getElementById('login-msg').textContent = msg;
 }
 
+function mostrarNovaSenha() {
+  mostrar('login');
+  $formLogin.classList.add('hidden');
+  $formNova.classList.remove('hidden');
+}
+
 async function iniciarSessao() {
+  if (recuperando) return mostrarNovaSenha();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return mostrarLogin();
   const { data: perfil, error } = await sb.from('perfis').select('*').eq('user_id', user.id).maybeSingle();
@@ -66,7 +80,7 @@ async function sair() {
 }
 
 async function roteia() {
-  if (state.perfil === null) return;
+  if (recuperando || state.perfil === null) return;
   const permitidas = paginasPermitidas();
   const id = location.hash.replace(/^#\/?/, '') || permitidas[0]?.id;
   const pagina = PAGINAS.find(p => p.id === id);
@@ -95,6 +109,35 @@ document.getElementById('form-login').addEventListener('submit', async e => {
   const { error } = await sb.auth.signInWithPassword({ email, password: senha });
   if (error) return toast('E-mail ou senha inválidos.', 'erro');
   await iniciarSessao();
+});
+
+document.getElementById('btn-esqueci').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) return toast('Digite seu e-mail no campo acima.', 'erro');
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: location.origin + location.pathname,
+  });
+  if (error) return toast('Não foi possível enviar o e-mail. Tente de novo em alguns minutos.', 'erro');
+  toast('Se o e-mail estiver cadastrado, você receberá um link para criar a nova senha.');
+});
+
+$formNova.addEventListener('submit', async e => {
+  e.preventDefault();
+  const s1 = document.getElementById('nova-senha').value;
+  const s2 = document.getElementById('nova-senha2').value;
+  if (s1.length < 6) return toast('A senha precisa ter pelo menos 6 caracteres.', 'erro');
+  if (s1 !== s2) return toast('As senhas não conferem.', 'erro');
+  const { error } = await sb.auth.updateUser({ password: s1 });
+  if (error) return toast('Não foi possível salvar a senha: ' + error.message, 'erro');
+  recuperando = false;
+  history.replaceState(null, '', location.pathname);
+  await sb.auth.signOut();
+  mostrarLogin('Senha alterada. Entre com a nova senha.');
+});
+
+// Ao abrir o link do e-mail, o Supabase cria a sessão de recuperação e avisa aqui
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') { recuperando = true; mostrarNovaSenha(); }
 });
 
 window.addEventListener('hashchange', roteia);
