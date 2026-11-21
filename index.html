@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estoque Web</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Bibliotecas (CDN gratuito): PDF e gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <section id="login" class="hidden">
+    <form id="form-login" class="cartao-login">
+      <h1>Estoque Web</h1>
+      <p class="muted">Entre com seu e-mail e senha.</p>
+      <label class="campo"><span>E-mail</span><input id="login-email" class="input" type="email" required autocomplete="username"></label>
+      <label class="campo"><span>Senha</span><input id="login-senha" class="input" type="password" required autocomplete="current-password"></label>
+      <button class="btn primario grande" type="submit">Entrar</button>
+      <p id="login-msg" class="aviso erro"></p>
+    </form>
+  </section>
+
+  <div id="app" class="hidden">
+    <aside id="menu"></aside>
+    <main id="conteudo"></main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
