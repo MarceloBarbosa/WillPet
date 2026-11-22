@@ -24,7 +24,8 @@
 
     <form id="form-nova-senha" class="cartao-login hidden">
       <h1>Nova senha</h1>
-      <p class="muted">Defina a sua nova senha de acesso.</p>
+      <p class="muted">Digite o código de 6 dígitos enviado ao seu e-mail e defina a nova senha.</p>
+      <label class="campo"><span>Código recebido por e-mail</span><input id="nova-codigo" class="input" type="text" inputmode="numeric" maxlength="6" required autocomplete="one-time-code"></label>
       <label class="campo"><span>Nova senha (mín. 6 caracteres)</span><input id="nova-senha" class="input" type="password" required minlength="6" autocomplete="new-password"></label>
       <label class="campo"><span>Confirmar nova senha</span><input id="nova-senha2" class="input" type="password" required minlength="6" autocomplete="new-password"></label>
       <button class="btn primario grande" type="submit">Salvar nova senha</button>
