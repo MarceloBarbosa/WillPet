@@ -22,8 +22,9 @@ function mostrar(secao) {
 
 const $formLogin = document.getElementById('form-login');
 const $formNova = document.getElementById('form-nova-senha');
-// true enquanto o usuário define a nova senha (link recebido por e-mail)
-let recuperando = location.hash.includes('type=recovery');
+// true enquanto o usuário troca a senha com o código recebido por e-mail
+let recuperando = false;
+let emailRecuperacao = '';
 
 function mostrarLogin(msg = '') {
   mostrar('login');
@@ -112,32 +113,32 @@ document.getElementById('form-login').addEventListener('submit', async e => {
 });
 
 document.getElementById('btn-esqueci').addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
   if (!email) return toast('Digite seu e-mail no campo acima.', 'erro');
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: location.origin + location.pathname,
-  });
-  if (error) return toast('Não foi possível enviar o e-mail. Tente de novo em alguns minutos.', 'erro');
-  toast('Se o e-mail estiver cadastrado, você receberá um link para criar a nova senha.');
+  const { error } = await sb.auth.resetPasswordForEmail(email);
+  if (error) return toast('Não foi possível enviar o código. Tente de novo em alguns minutos.', 'erro');
+  emailRecuperacao = email;
+  recuperando = true;
+  mostrarNovaSenha();
+  toast('Enviamos um código de 6 dígitos para o seu e-mail.');
 });
 
 $formNova.addEventListener('submit', async e => {
   e.preventDefault();
+  const codigo = document.getElementById('nova-codigo').value.trim();
   const s1 = document.getElementById('nova-senha').value;
   const s2 = document.getElementById('nova-senha2').value;
   if (s1.length < 6) return toast('A senha precisa ter pelo menos 6 caracteres.', 'erro');
   if (s1 !== s2) return toast('As senhas não conferem.', 'erro');
+  // Valida o código e cria a sessão nesta mesma página
+  const { error: erroCodigo } = await sb.auth.verifyOtp({ email: emailRecuperacao, token: codigo, type: 'recovery' });
+  if (erroCodigo) return toast('Código inválido ou expirado. Peça um novo.', 'erro');
   const { error } = await sb.auth.updateUser({ password: s1 });
   if (error) return toast('Não foi possível salvar a senha: ' + error.message, 'erro');
   recuperando = false;
-  history.replaceState(null, '', location.pathname);
+  emailRecuperacao = '';
   await sb.auth.signOut();
   mostrarLogin('Senha alterada. Entre com a nova senha.');
-});
-
-// Ao abrir o link do e-mail, o Supabase cria a sessão de recuperação e avisa aqui
-sb.auth.onAuthStateChange((event) => {
-  if (event === 'PASSWORD_RECOVERY') { recuperando = true; mostrarNovaSenha(); }
 });
 
 window.addEventListener('hashchange', roteia);
