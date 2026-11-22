@@ -108,7 +108,12 @@ document.getElementById('form-login').addEventListener('submit', async e => {
   const email = document.getElementById('login-email').value.trim();
   const senha = document.getElementById('login-senha').value;
   const { error } = await sb.auth.signInWithPassword({ email, password: senha });
-  if (error) return toast('E-mail ou senha inválidos.', 'erro');
+  if (error) {
+    const msg = error.message || '';
+    if (/not confirmed/i.test(msg)) return toast('Este e-mail ainda não foi confirmado no Supabase (Confirmado = não).', 'erro');
+    if (/invalid login credentials/i.test(msg)) return toast('E-mail ou senha incorretos. Confira o e-mail e tente de novo.', 'erro');
+    return toast('Não foi possível entrar: ' + msg, 'erro');
+  }
   await iniciarSessao();
 });
 
