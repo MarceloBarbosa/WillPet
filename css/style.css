@@ -133,3 +133,9 @@ h4 { font-size: 14px; margin: 12px 0 6px; }
   #menu, .acoes, .filtros, .btn { display: none !important; }
   #app { display: block; }
 }
+
+/* Logo Will Pet */
+.logo-login { width: 130px; display: block; margin: 0 auto 8px; }
+.logo-inicio { width: 120px; display: block; margin: 0 0 12px; }
+.logo-menu { width: 36px; height: 36px; vertical-align: middle; margin-right: 8px; }
+.marca { display: flex; align-items: center; }
