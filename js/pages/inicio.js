@@ -14,6 +14,7 @@ function card(titulo, valor, detalhe, alerta = false) {
 async function renderInicio(root) {
   const hoje = hojeISO();
   const cards = [];
+  root.append(el('img', { src: 'img/logo.png', alt: 'Will Pet', class: 'logo-inicio' }));
   root.append(el('h2', {}, 'Visão geral'), el('p', { class: 'muted' }, `Hoje: ${dataBR(hoje)}`));
 
   if (hasPerm('caixa') || hasPerm('relatorios')) {
