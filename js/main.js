@@ -62,7 +62,7 @@ function paginasPermitidas() {
 function montarMenu() {
   const permitidas = paginasPermitidas();
   $menu.replaceChildren(
-    el('div', { class: 'marca' }, 'Estoque Web'),
+    el('div', { class: 'marca' }, el('img', { src: 'img/logo.png', alt: '', class: 'logo-menu' }), 'Will Pet'),
     el('div', { class: 'usuario' }, state.perfil.nome, state.perfil.is_admin ? el('small', {}, ' (admin)') : null),
     ...GRUPOS.map(grupo => {
       const itens = permitidas.filter(p => p.grupo === grupo);
@@ -91,7 +91,7 @@ async function roteia() {
     $conteudo.replaceChildren(el('div', { class: 'aviso' }, 'Você não tem permissão para esta tela.'));
     return;
   }
-  document.title = `${pagina.titulo} · Estoque Web`;
+  document.title = `${pagina.titulo} · Will Pet`;
   $conteudo.replaceChildren(el('p', { class: 'vazio' }, 'Carregando…'));
   try {
     const conteudo = el('div', { class: 'pagina' });
